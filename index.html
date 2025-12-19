@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Willwi Music | 專業歌詞影片製作</title>
+    <meta property="og:title" content="Willwi Music" />
+    <meta property="og:description" content="專業動態歌詞影片製作工具，支援 SRT 匯入、AI 輔助與手動節奏對時。" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=2070&auto=format&fit=crop" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                900: '#1c1917', // Warm Stone
+                800: '#292524',
+                700: '#44403c',
+                500: '#f59e0b', // Amber/Gold
+                400: '#fbbf24',
+              },
+              noodle: {
+                light: '#fde68a',
+                DEFAULT: '#fbbf24', // Amber 400
+                dark: '#b45309',
+              },
+              soup: {
+                light: '#fdba74',
+                DEFAULT: '#ea580c', // Orange 600
+                dark: '#7c2d12',
+              },
+              neon: {
+                pink: '#f472b6',
+                cyan: '#22d3ee',
+                purple: '#c084fc'
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              display: ['Montserrat', 'sans-serif'],
+              serif: ['"Noto Serif TC"', 'serif'],
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'boil': 'boil 2s infinite ease-in-out',
+              'spin-slow': 'spin 8s linear infinite',
+            },
+            keyframes: {
+              boil: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-5px)' },
+              },
+              sparkle: {
+                  '0%, 100%': { opacity: 0.5, transform: 'scale(1)' },
+                  '50%': { opacity: 1, transform: 'scale(1.2)' },
+              }
+            }
+          },
+        },
+      };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;900&family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background-color: #1c1917;
+        color: #e7e5e4;
+        font-family: 'Inter', sans-serif;
+      }
+      .font-serif {
+        font-family: 'Noto Serif TC', serif;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #292524; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #57534e; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #78716c; 
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
