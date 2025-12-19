@@ -15,6 +15,7 @@ const DEFAULT_SETTINGS: VisualSettings = {
   fontFamily: 'Noto Serif TC', // Changed to Serif for the vibe
   fontSize: 60,
   particleCount: 50,
+  particleSpeed: 1.0, // Default speed
   beatSensitivity: 1.0,
   style: ThemeStyle.NEON,
   aspectRatio: '16:9', // Default landscape

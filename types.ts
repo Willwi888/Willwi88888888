@@ -22,7 +22,7 @@ export enum AnimationType {
   TYPEWRITER = 'TYPEWRITER',
   KINETIC = 'KINETIC',
   REVEAL = 'REVEAL',
-  WAVE = 'WAVE' // New animation
+  WAVE = 'WAVE'
 }
 
 export enum ParticleStyle {
@@ -44,10 +44,11 @@ export interface VisualSettings {
   fontFamily: string;
   fontSize: number;
   particleCount: number;
+  particleSpeed: number; // New field
   beatSensitivity: number; // 0.0 to 2.0
   style: ThemeStyle;
   
-  aspectRatio: AspectRatio; // New field
+  aspectRatio: AspectRatio;
 
   backgroundMode: BackgroundMode;
   backgroundImage?: string;

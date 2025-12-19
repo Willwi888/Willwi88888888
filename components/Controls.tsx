@@ -243,7 +243,7 @@ const Controls: React.FC<ControlsProps> = ({
         {/* === DESIGN TAB === */}
         {activeTab === 'DESIGN' && (
           <>
-             {/* Aspect Ratio - NEW */}
+             {/* Aspect Ratio */}
              <div>
                 <label className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">影片比例</label>
                 <div className="flex bg-brand-800 p-1 rounded-md mb-2">
@@ -321,7 +321,8 @@ const Controls: React.FC<ControlsProps> = ({
                    <option key={type} value={type}>{PARTICLE_STYLE_LABELS[type]}</option>
                    ))}
                </select>
-               <div>
+               
+               <div className="mb-2">
                     <span className="text-xs text-stone-500 block mb-1">粒子數量 ({settings.particleCount})</span>
                     <input 
                       type="range" 
@@ -331,7 +332,20 @@ const Controls: React.FC<ControlsProps> = ({
                       onChange={(e) => updateSettings({ particleCount: Number(e.target.value) })}
                       className="w-full accent-soup h-1 bg-brand-700 rounded-lg appearance-none cursor-pointer"
                     />
-                 </div>
+               </div>
+
+               <div>
+                    <span className="text-xs text-stone-500 block mb-1">粒子速度 ({settings.particleSpeed}x)</span>
+                    <input 
+                      type="range" 
+                      min="0.1" 
+                      max="5.0" 
+                      step="0.1"
+                      value={settings.particleSpeed}
+                      onChange={(e) => updateSettings({ particleSpeed: Number(e.target.value) })}
+                      className="w-full accent-soup h-1 bg-brand-700 rounded-lg appearance-none cursor-pointer"
+                    />
+               </div>
             </div>
 
             {/* Typography */}

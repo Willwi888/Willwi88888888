@@ -76,19 +76,23 @@ class Particle {
     }
   }
 
-  update(width: number, height: number, beatFactor: number) {
+  update(width: number, height: number, beatFactor: number, speedFactor: number) {
+    // Apply speedFactor to velocity components
+    const moveX = this.vx * speedFactor * beatFactor;
+    const moveY = this.vy * speedFactor * beatFactor;
+
     if (this.style === ParticleStyle.OCEAN) {
-        this.x += this.vx * beatFactor + Math.sin(this.life * 0.05) * 0.5; // Wobble
-        this.y += this.vy * beatFactor;
+        this.x += moveX + Math.sin(this.life * 0.05) * 0.5; 
+        this.y += moveY;
     } else if (this.style === ParticleStyle.SNOW) {
-        this.x += this.vx * beatFactor + Math.sin(this.life * 0.05) * 0.5;
-        this.y += this.vy * beatFactor;
+        this.x += moveX + Math.sin(this.life * 0.05) * 0.5;
+        this.y += moveY;
     } else {
-        this.x += this.vx * beatFactor;
-        this.y += this.vy * beatFactor;
+        this.x += moveX;
+        this.y += moveY;
     }
     
-    this.angle += this.rotationSpeed * beatFactor;
+    this.angle += this.rotationSpeed * beatFactor * speedFactor;
     this.life++;
 
     // Wrap around or bounce depending on style, here we just bounce/reset
@@ -388,7 +392,8 @@ const Visualizer: React.FC<VisualizerProps> = ({
       particlesRef.current.push(new Particle(width, height, Math.random() > 0.5 ? settings.primaryColor : settings.secondaryColor, settings.particleStyle));
     }
     particlesRef.current.forEach((p, index) => {
-      p.update(width, height, beatFactor);
+      // Pass particleSpeed from settings, default to 1.0 if undefined
+      p.update(width, height, beatFactor, settings.particleSpeed ?? 1.0);
       p.draw(ctx);
       // Remove if dead or way off screen
       if (p.life >= p.maxLife || p.y < -100 || p.y > height + 100 || p.x < -100 || p.x > width + 100) {
