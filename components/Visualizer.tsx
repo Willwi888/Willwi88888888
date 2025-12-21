@@ -341,56 +341,41 @@ const Visualizer: React.FC<VisualizerProps> = ({
 
     ctx.clearRect(0, 0, width, height);
 
-    // BACKGROUND
+    // BACKGROUND RENDERING LOGIC
+    // Using Source-Cropping method for 'object-fit: cover' to avoid distortion
+    const drawCover = (source: HTMLImageElement | HTMLVideoElement, srcW: number, srcH: number) => {
+        const targetRatio = width / height;
+        const sourceRatio = srcW / srcH;
+
+        let sx, sy, sWidth, sHeight;
+
+        if (sourceRatio > targetRatio) {
+            // Source is wider than target: Crop width
+            sHeight = srcH;
+            sWidth = srcH * targetRatio;
+            sx = (srcW - sWidth) / 2;
+            sy = 0;
+        } else {
+            // Source is taller than target: Crop height
+            sWidth = srcW;
+            sHeight = srcW / targetRatio;
+            sx = 0;
+            sy = (srcH - sHeight) / 2;
+        }
+
+        ctx.save();
+        ctx.filter = `brightness(${settings.backgroundBrightness ?? 1.0})`;
+        ctx.drawImage(source, sx, sy, sWidth, sHeight, 0, 0, width, height);
+        ctx.restore();
+        
+        ctx.fillStyle = `rgba(0,0,0,0.4)`;
+        ctx.fillRect(0, 0, width, height);
+    };
+
     if (settings.backgroundMode === 'VIDEO' && settings.backgroundVideo && bgVideoRef.current.readyState >= 2) {
-         const vid = bgVideoRef.current;
-         const vidRatio = vid.videoWidth / vid.videoHeight;
-         const canvasRatio = width / height;
-         let renderW, renderH, offsetX, offsetY;
-         if (vidRatio > canvasRatio) {
-           renderH = height;
-           renderW = height * vidRatio;
-           offsetX = (width - renderW) / 2;
-           offsetY = 0;
-         } else {
-           renderW = width;
-           renderH = width / vidRatio;
-           offsetX = 0;
-           offsetY = (height - renderH) / 2;
-         }
-         
-         ctx.save();
-         ctx.filter = `brightness(${settings.backgroundBrightness ?? 1.0})`;
-         ctx.drawImage(vid, offsetX, offsetY, renderW, renderH);
-         ctx.restore();
-
-         ctx.fillStyle = `rgba(0,0,0,0.4)`;
-         ctx.fillRect(0, 0, width, height);
-
+         drawCover(bgVideoRef.current, bgVideoRef.current.videoWidth, bgVideoRef.current.videoHeight);
     } else if (settings.backgroundMode === 'IMAGE' && bgImageRef.current) {
-      const img = bgImageRef.current;
-      const imgRatio = img.width / img.height;
-      const canvasRatio = width / height;
-      let renderW, renderH, offsetX, offsetY;
-      if (imgRatio > canvasRatio) {
-        renderH = height;
-        renderW = height * imgRatio;
-        offsetX = (width - renderW) / 2;
-        offsetY = 0;
-      } else {
-        renderW = width;
-        renderH = width / imgRatio;
-        offsetX = 0;
-        offsetY = (height - renderH) / 2;
-      }
-
-      ctx.save();
-      ctx.filter = `brightness(${settings.backgroundBrightness ?? 1.0})`;
-      ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
-      ctx.restore();
-
-      ctx.fillStyle = `rgba(0,0,0,0.4)`;
-      ctx.fillRect(0, 0, width, height);
+         drawCover(bgImageRef.current, bgImageRef.current.naturalWidth, bgImageRef.current.naturalHeight);
     } else {
       ctx.fillStyle = settings.backgroundColor;
       ctx.fillRect(0, 0, width, height);
