@@ -33,7 +33,7 @@ class Particle {
   rotationSpeed: number;
   type: number; // For styling variations
 
-  constructor(w: number, h: number, color: string, style: ParticleStyle) {
+  constructor(w: number, h: number, color: string, style: ParticleStyle, sizeMultiplier: number = 1.0) {
     this.x = Math.random() * w;
     this.y = Math.random() * h;
     this.style = style;
@@ -44,35 +44,36 @@ class Particle {
     this.rotationSpeed = (Math.random() - 0.5) * 0.05;
     this.type = Math.floor(Math.random() * 3); // 0, 1, 2
 
-    // Initialize based on style
+    // Initialize based on style and apply sizeMultiplier
     if (style === ParticleStyle.OCEAN) {
         this.vx = (Math.random() - 0.5) * 0.5;
         this.vy = -Math.random() * 1.5 - 0.2; // Bubbles float up
-        this.size = Math.random() * 4 + 2;
+        this.size = (Math.random() * 4 + 2) * sizeMultiplier;
     } else if (style === ParticleStyle.COSMOS) {
         this.vx = (Math.random() - 0.5) * 0.2; // Slow drift
         this.vy = (Math.random() - 0.5) * 0.2;
-        this.size = this.type === 0 ? Math.random() * 1.5 + 0.5 : Math.random() * 4 + 2; // Tiny stars vs planets
+        const baseSize = this.type === 0 ? Math.random() * 1.5 + 0.5 : Math.random() * 4 + 2;
+        this.size = baseSize * sizeMultiplier; 
         this.maxLife = Math.random() * 200 + 200; // Longer life
     } else if (style === ParticleStyle.GEOMETRIC) {
         this.vx = (Math.random() - 0.5) * 2;
         this.vy = (Math.random() - 0.5) * 2;
-        this.size = Math.random() * 6 + 4;
+        this.size = (Math.random() * 6 + 4) * sizeMultiplier;
         this.rotationSpeed = (Math.random() - 0.5) * 0.1;
     } else if (style === ParticleStyle.MUSICAL) {
         this.vx = (Math.random() - 0.5) * 1;
         this.vy = -Math.random() * 1 - 0.2; // Float up slowly
-        this.size = Math.random() * 10 + 10;
+        this.size = (Math.random() * 10 + 10) * sizeMultiplier;
         this.rotationSpeed = (Math.random() - 0.5) * 0.02;
     } else if (style === ParticleStyle.SNOW) {
         this.vx = (Math.random() - 0.5) * 0.5; // Slight wind drift
         this.vy = Math.random() * 2 + 1; // Fall down
-        this.size = Math.random() * 3 + 1;
+        this.size = (Math.random() * 3 + 1) * sizeMultiplier;
     } else {
         // STANDARD
         this.vx = (Math.random() - 0.5) * 1;
         this.vy = (Math.random() - 0.5) * 1;
-        this.size = Math.random() * 3 + 1;
+        this.size = (Math.random() * 3 + 1) * sizeMultiplier;
     }
   }
 
@@ -380,7 +381,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
 
     // Particles
     if (particlesRef.current.length < settings.particleCount) {
-      particlesRef.current.push(new Particle(width, height, Math.random() > 0.5 ? settings.primaryColor : settings.secondaryColor, settings.particleStyle));
+      particlesRef.current.push(new Particle(width, height, Math.random() > 0.5 ? settings.primaryColor : settings.secondaryColor, settings.particleStyle, settings.particleSize ?? 1.0));
     }
     particlesRef.current.forEach((p, index) => {
       p.update(width, height, beatFactor, settings.particleSpeed ?? 1.0);

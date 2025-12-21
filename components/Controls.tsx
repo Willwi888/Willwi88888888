@@ -344,7 +344,7 @@ const Controls: React.FC<ControlsProps> = ({
                     />
                </div>
 
-               <div>
+               <div className="mb-2">
                     <span className="text-xs text-stone-500 block mb-1">粒子速度 ({settings.particleSpeed}x)</span>
                     <input 
                       type="range" 
@@ -353,6 +353,19 @@ const Controls: React.FC<ControlsProps> = ({
                       step="0.1"
                       value={settings.particleSpeed}
                       onChange={(e) => updateSettings({ particleSpeed: Number(e.target.value) })}
+                      className="w-full accent-soup h-1 bg-brand-700 rounded-lg appearance-none cursor-pointer"
+                    />
+               </div>
+               
+               <div>
+                    <span className="text-xs text-stone-500 block mb-1">粒子大小 ({settings.particleSize || 1.0}x)</span>
+                    <input 
+                      type="range" 
+                      min="0.1" 
+                      max="3.0" 
+                      step="0.1"
+                      value={settings.particleSize || 1.0}
+                      onChange={(e) => updateSettings({ particleSize: Number(e.target.value) })}
                       className="w-full accent-soup h-1 bg-brand-700 rounded-lg appearance-none cursor-pointer"
                     />
                </div>

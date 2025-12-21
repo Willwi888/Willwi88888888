@@ -44,7 +44,8 @@ export interface VisualSettings {
   fontFamily: string;
   fontSize: number;
   particleCount: number;
-  particleSpeed: number; // New field
+  particleSpeed: number; 
+  particleSize: number; // New field for size multiplier
   beatSensitivity: number; // 0.0 to 2.0
   style: ThemeStyle;
   

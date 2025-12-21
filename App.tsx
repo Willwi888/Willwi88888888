@@ -15,7 +15,8 @@ const DEFAULT_SETTINGS: VisualSettings = {
   fontFamily: 'Noto Serif TC', // Changed to Serif for the vibe
   fontSize: 60,
   particleCount: 50,
-  particleSpeed: 1.0, // Default speed
+  particleSpeed: 1.0, 
+  particleSize: 1.0, // Default size multiplier
   beatSensitivity: 1.0,
   style: ThemeStyle.NEON,
   aspectRatio: '16:9', // Default landscape
@@ -27,7 +28,7 @@ const DEFAULT_SETTINGS: VisualSettings = {
 
   animationType: AnimationType.SLIDE_UP,
   animationSpeed: 1.0,
-  transitionDuration: 0.5, // Changed from 0.6 for snappier transitions
+  transitionDuration: 0.5, 
   
   particleStyle: ParticleStyle.STANDARD,
 
@@ -231,7 +232,7 @@ const App = () => {
       return () => window.removeEventListener('keydown', handleKeyDown);
   }, [showSyncOverlay, markCurrentLine]);
 
-  // Dynamic style for Aspect Ratio Container
+  // Robust container style for WYSIWYG
   const getContainerStyle = () => {
       let ratio = 16/9;
       switch (settings.aspectRatio) {
@@ -243,14 +244,13 @@ const App = () => {
       
       return {
           aspectRatio: `${ratio}`,
-          // Logic: Fit within the container without exceeding width or height
-          // Using a combination of max dimensions and auto scaling
+          // Key to WYSIWYG: Only constrain max dimensions, allow shrinking
           maxWidth: '100%',
           maxHeight: '100%',
-          width: ratio > 1 ? '100%' : 'auto', // Landscape favors width
-          height: ratio < 1 ? '100%' : 'auto', // Portrait favors height
-          // Fallback for square or near square to ensure it doesn't overflow
-          ...(ratio === 1 ? { height: '80vh', width: 'auto' } : {})
+          width: 'auto',
+          height: 'auto',
+          // Ensure it has dimension even if empty (aspect-ratio handles most, but flex needs help sometimes)
+          flex: '0 0 auto' 
       };
   };
 
@@ -284,26 +284,26 @@ const App = () => {
       {/* Right: Visualizer Workspace */}
       <div className="flex-1 flex flex-col relative bg-stone-950 min-w-0">
         {/* Top Bar */}
-        <div className="h-16 bg-brand-900 border-b border-brand-800 flex items-center justify-between px-6 shadow-sm z-20">
+        <div className="h-16 bg-brand-900 border-b border-brand-800 flex items-center justify-between px-6 shadow-sm z-20 shrink-0">
             <h1 className="font-display font-black text-xl tracking-tighter text-white">
               <span className="text-noodle">WILLWI</span> <span className="text-stone-500 font-medium text-sm">MUSIC</span>
             </h1>
         </div>
 
-        {/* Main Canvas Area */}
-        <div className="flex-1 p-8 flex items-center justify-center relative overflow-hidden">
+        {/* Main Canvas Area - Padded and centered */}
+        <div className="flex-1 p-8 flex items-center justify-center relative overflow-hidden w-full h-full">
              {/* Background Grid Pattern */}
              <div className="absolute inset-0 opacity-10 pointer-events-none" 
                   style={{ backgroundImage: 'radial-gradient(#44403c 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
              </div>
 
-             {/* Dynamic Container */}
+             {/* Dynamic Container - Pure CSS sizing for stability */}
              <div 
-                className="relative z-10 mx-auto transition-all duration-300 shadow-2xl rounded-xl overflow-hidden flex items-center justify-center bg-black"
+                className="relative z-10 transition-all duration-300 shadow-2xl rounded-xl overflow-hidden flex items-center justify-center bg-black"
                 style={getContainerStyle()}
              >
                  {!audioSrc ? (
-                     <div className="w-full h-full border-2 border-dashed border-brand-700 rounded-xl flex flex-col items-center justify-center text-stone-500 bg-brand-900/50 backdrop-blur-sm p-4">
+                     <div className="w-full h-full border-2 border-dashed border-brand-700 rounded-xl flex flex-col items-center justify-center text-stone-500 bg-brand-900/50 backdrop-blur-sm p-4 text-center">
                          <div className="text-4xl mb-4">🎵</div>
                          <p className="font-bold">請先於左側「備料」區上傳音樂</p>
                      </div>
