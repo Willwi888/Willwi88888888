@@ -1,10 +1,13 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { VisualSettings, ThemeStyle, LyricLine } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Helper to get a fresh AI instance (crucial for API Key updates)
+const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzeLyricsForTheme = async (lyrics: string): Promise<Partial<VisualSettings>> => {
   try {
+    const ai = getAI();
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Analyze the following song lyrics (which may be in Chinese or English) and suggest a visual theme. 
@@ -57,6 +60,7 @@ export const analyzeLyricsForTheme = async (lyrics: string): Promise<Partial<Vis
 export const translateLyricsAI = async (lyrics: LyricLine[], targetLang: string = "Traditional Chinese"): Promise<LyricLine[]> => {
     // Only send text to save tokens and reduce complexity
     const textLines = lyrics.map(l => ({ id: l.id, text: l.text }));
+    const ai = getAI();
     
     try {
         const response = await ai.models.generateContent({
@@ -105,6 +109,7 @@ export const translateLyricsAI = async (lyrics: LyricLine[], targetLang: string 
 
 export const smartTimingAI = async (text: string, totalDuration: number): Promise<LyricLine[]> => {
     try {
+        const ai = getAI();
         const response = await ai.models.generateContent({
             model: "gemini-3-flash-preview",
             contents: `I have a song lyric text and a total duration of ${totalDuration} seconds.
@@ -156,12 +161,14 @@ export const smartTimingAI = async (text: string, totalDuration: number): Promis
 export const generateVideo = async (
   prompt: string, 
   base64Image: string | undefined, 
-  aspectRatio: '16:9' | '9:16'
+  aspectRatio: '16:9' | '9:16',
+  resolution: '1080p' | '720p'
 ): Promise<string | null> => {
   try {
+    const ai = getAI();
     const config: any = {
       numberOfVideos: 1,
-      resolution: '1080p',
+      resolution: resolution,
       aspectRatio: aspectRatio
     };
 

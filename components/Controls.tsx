@@ -84,6 +84,7 @@ const Controls: React.FC<ControlsProps> = ({
   const [veoPassword, setVeoPassword] = useState('');
   const [veoPrompt, setVeoPrompt] = useState('');
   const [veoImage, setVeoImage] = useState<string | undefined>(undefined);
+  const [veoResolution, setVeoResolution] = useState<'1080p' | '720p'>('1080p');
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
 
   const handleVeoUnlock = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +115,14 @@ const Controls: React.FC<ControlsProps> = ({
       }
   };
 
+  const handleSelectApiKey = async () => {
+    if ((window as any).aistudio && (window as any).aistudio.openSelectKey) {
+        await (window as any).aistudio.openSelectKey();
+    } else {
+        alert("此環境不支援直接設定 API Key，請檢查環境變數。");
+    }
+  };
+
   const handleGenerateVideo = async () => {
       setIsGeneratingVideo(true);
       try {
@@ -121,7 +130,7 @@ const Controls: React.FC<ControlsProps> = ({
           // Veo only supports 16:9 or 9:16. Map 1:1 and 4:3 to 16:9 for now.
           const targetRatio = settings.aspectRatio === '9:16' ? '9:16' : '16:9';
           
-          const videoUrl = await generateVideo(veoPrompt, veoImage, targetRatio);
+          const videoUrl = await generateVideo(veoPrompt, veoImage, targetRatio, veoResolution);
           
           if (videoUrl) {
               updateSettings({
@@ -136,7 +145,7 @@ const Controls: React.FC<ControlsProps> = ({
           }
       } catch (e) {
           console.error(e);
-          alert("發生錯誤，請檢查網路或 API Key。");
+          alert("發生錯誤，請檢查網路或 API Key (Veo 需要付費專案權限)。");
       } finally {
           setIsGeneratingVideo(false);
       }
@@ -208,10 +217,28 @@ const Controls: React.FC<ControlsProps> = ({
                            className="w-full bg-black/50 text-stone-200 text-xs rounded-md border border-indigo-700 p-2 outline-none focus:border-indigo-400 h-20 resize-none"
                         />
                         
-                        <label className="flex items-center justify-center w-full py-2 bg-indigo-900/50 hover:bg-indigo-800 rounded border border-indigo-700 cursor-pointer transition-colors text-xs text-indigo-200 gap-2">
-                            {veoImage ? "🖼️ 已選取圖片 (可更換)" : "📤 上傳參考圖片 (選填)"}
-                            <input type="file" accept="image/*" onChange={handleVeoImageUpload} className="hidden" />
-                        </label>
+                        <div className="flex gap-2">
+                            <label className="flex-1 flex items-center justify-center py-2 bg-indigo-900/50 hover:bg-indigo-800 rounded border border-indigo-700 cursor-pointer transition-colors text-xs text-indigo-200 gap-2 truncate px-2">
+                                {veoImage ? "🖼️ 已選圖片" : "📤 參考圖"}
+                                <input type="file" accept="image/*" onChange={handleVeoImageUpload} className="hidden" />
+                            </label>
+                            
+                            <select 
+                                value={veoResolution}
+                                onChange={(e) => setVeoResolution(e.target.value as '1080p' | '720p')}
+                                className="w-20 bg-indigo-900/50 text-xs text-indigo-200 rounded border border-indigo-700 outline-none p-1"
+                            >
+                                <option value="1080p">1080p</option>
+                                <option value="720p">720p</option>
+                            </select>
+                        </div>
+                        
+                        <button 
+                           onClick={handleSelectApiKey}
+                           className="w-full py-1.5 bg-brand-800/50 hover:bg-brand-700 text-stone-400 hover:text-white rounded border border-brand-700 text-[10px] transition-colors flex items-center justify-center gap-1"
+                        >
+                           🔑 設定付費 API Key (必要)
+                        </button>
 
                         <button 
                            onClick={handleGenerateVideo}
